@@ -39,16 +39,21 @@ var inicializaCronometro = function(){
 			$("#tDigitacao").text(tRestante);
 			if(tRestante < 1){
 				clearInterval(cronometroID);
-				campo.attr("disabled", true);
-				$("#botao-reiniciar").attr("disabled", false);
-				//campo.css("background-color","lightgrey");
-				campo.toggleClass("campo-desativado");
+				finalizaJogo();
 			}
 		},1000);
 
 	});
 
 };
+
+function finalizaJogo(){
+	campo.attr("disabled", true);
+	$("#botao-reiniciar").attr("disabled", false);
+	//campo.css("background-color","lightgrey");
+	campo.toggleClass("campo-desativado");
+	inserePlacar();
+}
 
 
 var reiniciaJogo = function(){
@@ -71,7 +76,7 @@ var inicializaMarcadores = function(){
 
 		if(digitado == comparavel){
 			campo.addClass("borda-verde");
-			campo.removeClass("borda-vermelha")
+			campo.removeClass("borda-vermelha");
 		}else{
 			campo.addClass("borda-vermelha");
 			campo.removeClass("borda-verde");
@@ -84,3 +89,39 @@ var inicializaMarcadores = function(){
 
 
 
+function inserePlacar() {
+	var placar = $(".placar");
+	var corpoTabela = placar.find("tbody");
+	var usuario = "nome usuário";
+	var numPalavras = $("#contador-palavras").text();
+
+	var linha = novaLinha(usuario, numPalavras);
+	linha.find(".botao-remover").click(removeLinha);
+
+	corpoTabela.append(linha);
+}
+
+function novaLinha(usuario, palavras){
+	var linha = $("<tr>");
+	var colunaUsuario = $("<td>").text(usuario);
+	var colunaPalavras = $("<td>").text(palavras);
+	var colunaRemover = $("<td>");
+
+    var link = $("<a>").attr("href","#").addClass("botao-remover");
+    var icone = $("<i>").addClass("small").addClass("material-icons").text("delete");
+
+    link.append(icone);
+    colunaRemover.append(link);
+
+	linha.append(colunaUsuario);
+	linha.append(colunaPalavras);
+	linha.append(colunaRemover);
+
+	return linha;
+}
+
+
+function removeLinha(event){
+	event.preventDefault();
+	$(this).parent().parent().remove();
+}
